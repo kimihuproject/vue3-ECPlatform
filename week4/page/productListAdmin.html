@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+    <title>產品管理清單(元件化)</title>
+</head>
+
+<body>
+    <header>
+        <div class="bg-warning bg-opacity-25 p-3">
+            <h1 class="h3">產品管理列表</h1>
+        </div>
+        <div id="app">
+            <div id="product-board">
+                <div class="container">
+                    <div class="text-end my-4">
+                        <!-- 打開model的方式和直接套用BS5不同 -->
+                        <button type="button" class="btn btn-warning " @click="openModal('add')">新增產品</button>
+                    </div>
+                    <table class="table text-center">
+                        <thead>
+                            <tr>
+                                <th width="10">序號</th>
+                                <th width="70">分類</th>
+                                <th width="120">產品名稱</th>
+                                <th width="120">售價</th>
+                                <th width="120">上架裝態</th>
+                                <th width="120">編輯</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="(product,index) in productsData" :key="product.id" class="align-middle">
+                                <td>{{index+1}}</td>
+                                <td>{{product.category}}</td>
+                                <td>{{product.title}}</td>
+                                <td>{{product.price}}</td>
+                                <td :class="{'text-success':product.is_enabled}"> {{product.is_enabled?"啟用":"未啟用"}}
+                                </td>
+                                <td>
+                                    <!-- 打開model的方式和直接套用BS5不同 -->
+                                    <button type="button" class="btn btn-outline-primary btn-sm m-1"
+                                            @click="openModal('edit',product)">編輯</button>
+                                    <button type=" button" class="btn btn-outline-danger btn-sm m-1"
+                                            @click="openModal('delete',product)">刪除</button>
+                                </td>
+                            </tr>
+                        </tbody>
+
+                    </table>
+
+                </div>
+            </div>
+            <!-- 1 分頁 -->
+            <pagination :pages="page" :get-per-product="getAdminProductsData" @change-page="getAdminProductsData">
+            </pagination>
+            <div>
+                <p class="text-body-tertiary fw-light text-center">
+                    &copy; Globetrotting Table since 2023
+                </p>
+            </div>
+            <!-- modal -->
+            <!-- modal add / edit new product-->
+            <product-modal-template :products-selected="productsSelected" :products-is-new="productsIsNew"
+                                    :product-categories="productCategories" :add-side-images="addSideImages"
+                                    :save-product-change="saveProductChange"
+                                    :upload-image="uploadImage"></product-modal-template>
+            <!-- modal delete product-->
+            <del-modal-template :products-selected="productsSelected" :del-product="delProduct"></del-modal-template>
+        </div>
+    </header>
+    <!-- 元件：刪除 -->
+    <script type="text/x-template" id="delModal">
+                    <div class="modal fade" id="delProductModal" tabindex="-1" aria-labelledby="delProduct" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header bg-danger text-light">
+                            <h5 class="modal-title" id="exampleModalLabel">刪除產品</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div>
+                                <p>確認刪除商品：</p>
+                                <p class="m-0 fw-bold">產品名稱：{{ productsSelected.title}}</p>
+                                <p class="fw-bold">產品ＩＤ：{{ productsSelected.id}}</p>
+                            </div>
+                            <strong class="text-danger fs-6">＊產品經刪除後無法復原。</strong>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                            <button type="button" class="btn btn-danger"
+                                    @click="delProduct(productsSelected.id)">確定刪除</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    </script>
+    <!-- axios -->
+    <script src="https://cdn.jsdelivr.net/npm/axios@1.1.2/dist/axios.min.js""></script>
+<!--bootstrap 5-->
+<script src=" https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN"
+            crossorigin="anonymous"></script>
+    <!-- productListAdmin.js -->
+    <script src="../js/productListAdmin.js" type="module"></script>
+</body>
+
+</html>
