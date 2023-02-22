@@ -15,7 +15,6 @@ export default defineConfig({
       include: ['src/**/*.js', 'src/**/*.vue', 'src/*.js', 'src/*.vue']
     })
   ],
-  base: '/vue3-ECPlatform/',
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url))
